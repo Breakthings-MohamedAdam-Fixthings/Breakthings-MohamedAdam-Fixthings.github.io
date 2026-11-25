@@ -1,0 +1,681 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head><body>
+<title>A Little Note for You</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@400;600;800&family=Sniglet:wght@400;800&family=Baloo+Bhaijaan+2:wght@500;700&display=swap">
+<style>
+/* Layout: one soft paper note floating over a pastel sky; birthday mode swaps the note for a cake you can blow out. */
+:root {
+  --bg: #ffe8ee; --bg2: #fff3e6; --card: #fffdfb; --ink: #4f2637; --muted: #8f6074;
+  --rose: #ff5d8a; --lav: #b9a3f2; --mint: #8fd6bd; --butter: #ffd66b; --line: #f4c6d3;
+  --shadow: 0 18px 40px -18px rgba(150, 50, 90, .45);
+  --display: "Sniglet", "Nunito", "Trebuchet MS", system-ui, sans-serif;
+  --hand: "Gaegu", "Comic Sans MS", "Chalkboard SE", cursive;
+  --body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #24162a; --bg2: #331d36; --card: #3a2541; --ink: #fde8ef; --muted: #cfa3b8;
+  --rose: #ff86a6; --lav: #a993ee; --mint: #7cc8ad; --butter: #f3c855; --line: #5c3b62;
+  --shadow: 0 18px 40px -18px rgba(0, 0, 0, .7); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #24162a; --bg2: #331d36; --card: #3a2541; --ink: #fde8ef; --muted: #cfa3b8;
+  --rose: #ff86a6; --lav: #a993ee; --mint: #7cc8ad; --butter: #f3c855; --line: #5c3b62;
+  --shadow: 0 18px 40px -18px rgba(0, 0, 0, .7); color-scheme: dark; }
+
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  background: var(--bg);
+  background-image: radial-gradient(circle at 15% 10%, var(--bg2) 0, transparent 45%),
+                    radial-gradient(circle at 90% 85%, var(--bg2) 0, transparent 40%);
+  background-attachment: fixed;
+  color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55;
+  overflow-x: hidden;
+}
+.wrap {
+  position: relative; z-index: 2; max-width: 34rem; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 3rem; display: flex; flex-direction: column; gap: 1.6rem;
+}
+.eyebrow { margin: 0; font-weight: 800; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: .2rem 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 8vw, 2.7rem); line-height: 1.1; text-wrap: balance; }
+h1 .heart { color: var(--rose); display: inline-block; animation: beat 1.6s ease-in-out infinite; }
+
+/* The note */
+.note {
+  position: relative; background: var(--card); border-radius: 22px; box-shadow: var(--shadow);
+  padding: 2.4rem 1.6rem 1.6rem; transform: rotate(-1.2deg);
+  background-image: repeating-linear-gradient(transparent 0 33px, var(--line) 33px 34px);
+  background-position: 0 1.9rem;
+  animation: floatIn .9s cubic-bezier(.2, .9, .3, 1.3) both;
+}
+.note::before { /* washi tape */
+  content: ""; position: absolute; top: -12px; left: 50%; width: 96px; height: 26px; margin-left: -48px;
+  background: var(--mint); opacity: .8; transform: rotate(-3deg); border-radius: 3px;
+}
+.stamp {
+  position: absolute; top: -18px; right: 14px; width: 62px; height: 62px; border-radius: 50%;
+  background: var(--rose); color: var(--card); display: grid; place-content: center; text-align: center;
+  font-family: var(--display); transform: rotate(10deg); box-shadow: 0 6px 14px -6px var(--rose);
+  border: 3px dashed var(--card); outline: 3px solid var(--rose);
+}
+.stamp span { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; line-height: 1; }
+.stamp b { font-size: 1.4rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.msg { margin: 0; font-family: var(--hand); font-size: clamp(1.55rem, 6.4vw, 1.9rem); line-height: 34px; font-weight: 700; text-wrap: pretty; }
+.msg::before { content: ""; float: right; width: 44px; height: 26px; }
+.sig { margin: 1rem 0 0; text-align: right; font-family: var(--hand); font-size: 1.35rem; color: var(--rose); }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1rem; }
+.btn {
+  appearance: none; border: 0; cursor: pointer; font: 800 1rem/1 var(--body); color: #fff;
+  background: var(--rose); padding: .95rem 1.4rem; border-radius: 999px; display: inline-flex; gap: .5rem; align-items: center;
+  box-shadow: 0 8px 0 -2px color-mix(in srgb, var(--rose) 60%, var(--ink)); transition: transform .12s, box-shadow .12s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(4px); box-shadow: 0 3px 0 -2px color-mix(in srgb, var(--rose) 60%, var(--ink)); }
+.btn:focus-visible, .candle:focus-visible, .balloon:focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--line); }
+.count { color: var(--muted); font-weight: 600; font-size: .95rem; }
+.next { margin: 0; color: var(--muted); font-size: .95rem; }
+.next b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* Floating background hearts */
+#sky { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+#sky i { position: absolute; bottom: -40px; font-style: normal; color: var(--rose); opacity: .22; animation: drift linear infinite; }
+#fx { position: fixed; inset: 0; z-index: 5; pointer-events: none; width: 100%; height: 100%; }
+
+/* ---------- Birthday ---------- */
+.bday-title { font-size: clamp(2.6rem, 12vw, 3.6rem); }
+.bday-title .ltr { display: inline-block; animation: wave 1.8s ease-in-out infinite; }
+.bday-title .ltr:nth-child(4n+1) { color: var(--rose); }
+.bday-title .ltr:nth-child(4n+2) { color: var(--lav); }
+.bday-title .ltr:nth-child(4n+3) { color: var(--mint); }
+.bday-title .ltr:nth-child(4n+4) { color: var(--butter); }
+.bday-sub { margin: .4rem 0 0; font-family: var(--hand); font-size: 1.6rem; font-weight: 700; }
+.cake-card { background: var(--card); border-radius: 26px; box-shadow: var(--shadow); padding: 1.4rem 1rem 1.2rem; display: flex; flex-direction: column; align-items: center; gap: .6rem; animation: floatIn .9s .1s cubic-bezier(.2, .9, .3, 1.3) both; }
+.cake-card svg { width: min(100%, 300px); height: auto; overflow: visible; }
+.hint { margin: 0; text-align: center; font-weight: 700; color: var(--muted); }
+.hint.done { color: var(--rose); font-family: var(--display); font-size: 1.3rem; animation: pop .5s; }
+.candle { cursor: pointer; }
+.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker .35s ease-in-out infinite alternate; transition: transform .25s, opacity .25s; }
+.glow { animation: glow 1.2s ease-in-out infinite alternate; transition: opacity .25s; }
+.candle.out .flame { transform: scale(0); opacity: 0; animation: none; }
+.candle.out .glow { opacity: 0; animation: none; }
+.smoke { opacity: 0; }
+.candle.out .smoke { animation: smoke 1.4s ease-out forwards; }
+.cake-bob { animation: bob 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.wish { margin: 1.2rem 0 0; font-family: var(--hand); font-size: 1.45rem; font-weight: 700; color: var(--rose); line-height: 34px; }
+.balloons { position: fixed; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.balloon {
+  position: absolute; bottom: -140px; pointer-events: auto; border: 0; padding: 0; background: none; cursor: pointer;
+  width: 64px; animation: rise linear forwards; touch-action: manipulation;
+}
+.balloon svg { width: 100%; height: auto; display: block; animation: sway 2.6s ease-in-out infinite alternate; }
+
+/* ---------- Arabic word of the day ---------- */
+.word-card {
+  position: relative; background: var(--card); border-radius: 22px; box-shadow: var(--shadow);
+  padding: 2.2rem 1.6rem 1.5rem; transform: rotate(1deg);
+  animation: floatIn .9s .15s cubic-bezier(.2, .9, .3, 1.3) both;
+  background-image: radial-gradient(var(--line) 1.2px, transparent 1.3px); background-size: 18px 18px;
+}
+.word-card::before { content: ""; position: absolute; top: -12px; left: 50%; width: 96px; height: 26px; margin-left: -48px;
+  background: var(--lav); opacity: .8; transform: rotate(2deg); border-radius: 3px; }
+.word-card .stamp { background: var(--lav); outline-color: var(--lav); box-shadow: 0 6px 14px -6px var(--lav); transform: rotate(-8deg); }
+.word-card .stamp b { font-size: 1.15rem; }
+.word-card .eyebrow { margin-right: 64px; }
+.word-row { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1.2rem; margin-top: .9rem; }
+.ar {
+  margin: 0; font-family: "Baloo Bhaijaan 2", "Geeza Pro", "Noto Naskh Arabic", "Arial", sans-serif;
+  font-size: clamp(2.6rem, 13vw, 3.4rem); font-weight: 700; line-height: 1.35; color: var(--rose);
+  unicode-bidi: isolate;
+}
+.word-en { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+.say { color: var(--muted); font-weight: 600; font-size: 1.05rem; }
+.say b { font-size: 1.2rem; }
+.say b { color: var(--ink); font-weight: 800; letter-spacing: .02em; }
+.word-tools { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.1rem; align-items: flex-start; }
+.peek {
+  appearance: none; cursor: pointer; flex: 1 1 14rem; text-align: left; font: 700 .98rem/1.45 var(--body); color: var(--ink);
+  background: color-mix(in srgb, var(--butter) 22%, var(--card)); border: 2px dashed var(--butter);
+  border-radius: 16px; padding: .75rem 1rem; transition: transform .12s;
+}
+.peek:hover { transform: translateY(-1px); }
+.peek:focus-visible, .speak:focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; }
+.peek .lbl { display: block; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.peek .txt { display: block; font-family: var(--hand); font-size: 1.3rem; line-height: 1.3; }
+.peek.open { animation: pop .4s; }
+.speak {
+  appearance: none; border: 0; cursor: pointer; font: 800 .95rem/1 var(--body); color: var(--ink);
+  background: transparent; box-shadow: inset 0 0 0 2px var(--line); border-radius: 999px; padding: .8rem 1.1rem;
+}
+.ar-inline { font-family: "Baloo Bhaijaan 2", "Geeza Pro", sans-serif; font-size: 1.15em; }
+
+@keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
+@keyframes floatIn { from { transform: translateY(30px) rotate(-4deg) scale(.96); opacity: .3; } }
+@keyframes drift { from { transform: translateY(0) translateX(0) rotate(-10deg); } 50% { transform: translateY(-55vh) translateX(20px) rotate(10deg); } to { transform: translateY(-115vh) translateX(-10px) rotate(-6deg); } }
+@keyframes wave { 0%, 60%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-12px) rotate(-4deg); } }
+@keyframes flicker { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(.9, 1.12) rotate(3deg); } }
+@keyframes glow { from { opacity: .25; } to { opacity: .5; } }
+@keyframes smoke { 0% { opacity: .6; transform: translateY(0) scale(.6); } 100% { opacity: 0; transform: translateY(-34px) scale(1.6); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes rise { to { transform: translateY(calc(-100vh - 260px)); } }
+@keyframes sway { from { transform: rotate(-6deg) translateX(-6px); } to { transform: rotate(6deg) translateX(6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+  #sky, .balloons { display: none; }
+}
+</style>
+
+<div id="sky" aria-hidden="true"></div>
+<div class="balloons" id="balloons"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<main class="wrap">
+  <!-- Everyday note -->
+  <section id="daily" hidden>
+    <div style="display:flex;flex-direction:column;gap:1.6rem">
+      <header>
+        <p class="eyebrow" id="dateLine">Today</p>
+        <h1><span id="hello">A little note for you</span> <span class="heart" aria-hidden="true">&#9829;&#xFE0E;</span></h1>
+      </header>
+      <article class="note" aria-live="polite">
+        <div class="stamp" aria-label="Note number"><span>Note</span><b id="noteNo">1</b></div>
+        <p class="msg" id="msg">Good morning, you. Someone out here thinks your day deserves to go really, really well.</p>
+        <p class="sig" id="sig">— someone who thinks you're great</p>
+      </article>
+      <div class="actions">
+        <button class="btn" id="hugBtn" type="button">Send a heart back <span aria-hidden="true">&#9829;&#xFE0E;</span></button>
+        <span class="count" id="hugCount"></span>
+      </div>
+      <p class="next">A new note arrives in <b id="countdown">a few hours</b></p>
+
+      <!-- Arabic word of the day -->
+      <article class="word-card" aria-labelledby="wordHead">
+        <div class="stamp" aria-hidden="true"><span>Word</span><b id="wordNo">1</b></div>
+        <p class="eyebrow" id="wordHead">Arabic word of the day</p>
+        <div class="word-row">
+          <p class="ar" id="wordAr" lang="ar" dir="rtl">قَلْب</p>
+          <div class="word-en">
+            <span class="say">say it: <b id="wordSay">qalb</b></span>
+          </div>
+        </div>
+        <div class="word-tools">
+          <button class="peek" id="peekBtn" type="button" aria-expanded="false" aria-controls="peekTxt">
+            <span class="lbl" id="peekLbl">Hint</span>
+            <span class="txt" id="peekTxt">Tap for a little hint &#9829;&#xFE0E;</span>
+          </button>
+          <button class="speak" id="speakBtn" type="button" hidden>Hear it &#128264;&#xFE0E;</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Birthday (November 13) -->
+  <section id="bday" hidden>
+    <div style="display:flex;flex-direction:column;gap:1.6rem">
+      <header>
+        <p class="eyebrow" id="bdayDate">November 13</p>
+        <h1 class="bday-title" id="bdayTitle" aria-label="Happy Birthday">Happy Birthday</h1>
+        <p class="bday-sub" id="bdaySub">to the loveliest person I know</p>
+      </header>
+      <div class="cake-card">
+        <svg id="cake" viewBox="0 0 240 225" role="group" aria-label="Birthday cake with three candles"></svg>
+        <p class="hint" id="cakeHint">Make a wish, then tap each candle to blow it out.</p>
+        <button class="btn ghost" id="blowAll" type="button">Blow them all out at once</button>
+      </div>
+      <article class="note">
+        <div class="stamp" aria-hidden="true"><span>Bday</span><b>&#9829;&#xFE0E;</b></div>
+        <p class="msg" id="bdayMsg">Happy birthday! Today is officially all about you. I hope it's full of people who adore you, food that's way too good, and at least one moment where you stop and think, wow, I'm lucky. (For the record, everyone around you is thinking that about you.) Here's to a year as kind, funny, and lovely as you are.</p>
+        <p class="wish" id="wishLine" hidden>Wish received. I won't ask what it was, but I'm already rooting for it.</p>
+        <p class="sig" id="bdaySig">— someone who thinks you're great</p>
+      </article>
+      <div class="actions">
+        <button class="btn" id="partyBtn" type="button">More confetti, please</button>
+        <span class="count" id="popCount">Psst, the balloons pop.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ===== Personalize here ===== */
+const HER_NAME = "";            // e.g. "Lily" (leave "" to keep it sweet and anonymous)
+const SIGNED = "";              // e.g. "Noki" (leave "" for "someone who thinks you're great")
+const START = [2026, 10, 14];   // year, month (0 = Jan), day: the date of Note #1
+const BIRTHDAY = [10, 13];
+const WORD_START = [2026, 10, 25]; // year, month (0 = Jan), day: the date of Word #1      // month (0 = Jan), day: November 13
+
+const MESSAGES = [
+  "Good morning, you. Just so you know, someone out here thinks your day deserves to go really, really well.",
+  "Your laugh is one of my favorite sounds. Go find a reason to use it today.",
+  "Drink some water, eat something yummy, and remember you're kind of amazing.",
+  "If today gets heavy, set it down for a second. You don't have to carry everything at once.",
+  "I hope something small and lovely surprises you today. A good song, a warm drink, a text from me, maybe.",
+  "You make ordinary things feel like a little adventure. That's a rare talent.",
+  "Reminder: you're allowed to take up space, ask for things, and rest.",
+  "Somewhere in your day there's a moment worth smiling at. I hope you catch it.",
+  "You're the kind of person people feel lucky to know. I would know.",
+  "Today's forecast: 100% chance of you being wonderful, with scattered moments of being way too cute.",
+  "Be gentle with yourself today. You're doing better than you think.",
+  "I was thinking about you just now. That's it, that's the note.",
+  "Your kindness doesn't go unnoticed. It makes the world softer, one person at a time.",
+  "If you were a flower, you'd be the one people stop on the sidewalk to look at.",
+  "Whatever you're working on, you've got this. And if you don't, I'll bring snacks.",
+  "You have a way of making people feel seen. I hope someone does that for you today.",
+  "Take a deep breath. Now another. Okay, now go be brilliant.",
+  "Fun fact: the sun came up today mostly to see you. Probably.",
+  "You don't need to earn rest. Take a little today.",
+  "I like the way your mind works. Never stop being curious.",
+  "Small wins count. Made your bed? Huge. Answered that email? Legendary.",
+  "If anyone's mean to you today, just know I'm on your side, arms crossed, very unimpressed with them.",
+  "Your smile could probably power a small town. Use it responsibly.",
+  "Hope your coffee is perfect and your to-do list is short.",
+  "You're someone worth getting to know, and I'm really glad I get to.",
+  "Hard days don't last. Good people do, and you're one of the best.",
+  "Step outside for a minute today if you can. The sky's been waiting to show off for you.",
+  "You're allowed to be proud of yourself. Like, right now. Go ahead.",
+  "I hope today feels like a warm blanket fresh out of the dryer.",
+  "Even your random thoughts are interesting. Tell me one later?",
+  "You are so much more than your to-do list.",
+  "Thank you for being exactly who you are. It's a really good who.",
+  "If you need a sign to treat yourself today, this is it. Dessert counts.",
+  "You light up conversations without even trying. Honestly, it's a little unfair.",
+  "Your dreams aren't too big. You're just early.",
+  "The world is a little better with you in it. That's not flattery, it's math.",
+  "Sending you a tiny invisible hug. It's in your pocket now. Use when needed.",
+  "Whatever you're worried about, you've handled harder. You'll handle this too.",
+  "You deserve the same patience you give everyone else.",
+  "I hope you hear your favorite song at exactly the right moment today.",
+  "You're the best plot twist my week has had.",
+  "Be brave in one small way today. I believe in you.",
+  "Your heart is a good one. Keep it soft. The world needs more like it.",
+  "If today were a book, I hope it's the chapter where everything starts going right.",
+  "Quick check-in: shoulders relaxed? Jaw unclenched? Good. You're doing great.",
+  "You make the people around you braver. I've noticed.",
+  "Today is a fresh page. Doodle on it however you like.",
+  "Some people are sunshine. You're more like golden hour: warm and a little bit magic.",
+  "Whatever you do today, do it like the main character you are.",
+  "You don't have to be perfect to be wonderful. You're already the second one.",
+  "I hope you laugh so hard today that you snort a little. Highly recommended.",
+  "You're stronger than your worst day and softer than you let on.",
+  "Reminder to eat a real meal. I care about you, and also about lunch.",
+  "There's something about you that makes the day feel lighter. Keep doing that.",
+  "Let today be easy wherever it can be.",
+  "You have excellent taste. Clearly, since you're reading this.",
+  "If kindness were a sport, you'd have a shelf full of trophies.",
+  "Somebody is smiling at their phone right now because of you. (It's me.)",
+  "You've come a long way. Look back for a second. It's impressive.",
+  "Your energy is contagious. Spread it around today.",
+  "Not every day has to be productive. Some days you just get to be.",
+  "You're one of the good parts of my day. Every day.",
+  "May your hair cooperate, your plans go smoothly, and your snacks be plentiful.",
+  "You make being yourself look easy. It's very cool.",
+  "Whatever happens today, you're still you at the end of it. And you're great.",
+  "I hope you find a reason to dance a little today, even if it's only in the kitchen.",
+  "The way you care about things is beautiful. Never let anyone dim that.",
+  "If you feel tired, it just means you've been trying. Rest is part of it.",
+  "Here's to cozy socks, good news, and people who make you feel at home.",
+  "You don't need anyone's permission to shine. But if you want it, you have mine.",
+  "I hope today treats you as kindly as you treat everyone else.",
+  "Your future is going to be so good. I can tell from here.",
+  "Little reminder that you are very, very easy to like.",
+  "Take things one step at a time. Tiny steps still go places.",
+  "If you could see yourself the way others do, you'd blush.",
+  "Today, be the friend to yourself that you are to everyone else.",
+  "You're doing the best you can, and that's genuinely enough.",
+  "Some days are for big things. Some are for naps. Both are valid.",
+  "There's a whole lot of good waiting for you. Go say hi to it.",
+  "I'd pick you out of a crowd, every time.",
+  "You are proof that good things exist.",
+  "Whatever today brings, I hope it ends with you smiling.",
+  "You're kind, interesting, and a tiny bit mischievous. Perfect combo.",
+  "Here's a gold star for today. You don't have to do anything to earn it.",
+  "Look up at the sky at least once today. It's free and it's pretty.",
+  "I hope your day has more green lights than red ones.",
+  "You make the world feel a little less serious, and I'm so here for it.",
+  "Talking to you feels like a good playlist on shuffle. Every song's a favorite.",
+  "I hope you know how much light you bring into a room.",
+  "Tomorrow's note is already excited to see you. So am I."
+];
+
+/* ===== Arabic word of the day: [Arabic, how to say it, English, hint] ===== */
+const WORDS = [
+  ["قَلْب", "qalb", "heart", "The thing that beats a little faster when you see someone you like. \"Qalbi\" means \"my heart.\""],
+  ["حُبّ", "hubb", "love", "Same root as \"habibi\" and \"habibti\": my dear, my love."],
+  ["شَمْس", "shams", "sun", "It rises every morning, mostly to see you."],
+  ["قَمَر", "qamar", "moon", "Calling someone \"ya amar\" (you moon!) means they're gorgeous."],
+  ["نَجْمَة", "najma", "star", "Look up on a clear night: there are thousands of them."],
+  ["وَرْدَة", "warda", "rose", "A flower people give on Valentine's Day. Also a pretty girl's name."],
+  ["سَمَاء", "samaa'", "sky", "Big, blue, and always above you."],
+  ["بَحْر", "bahr", "sea", "Salty, wavy, and great for vacations."],
+  ["بَيْت", "bayt", "home, house", "The place where your cozy socks live."],
+  ["صَدِيقَة", "sadeeqa", "friend (to a girl)", "Someone you text when something funny happens."],
+  ["اِبْتِسَامَة", "ibtisaama", "smile", "You're probably doing it right now. Go on."],
+  ["ضَحِك", "dahik", "laughter", "The sound you make at a really good joke."],
+  ["سَعَادَة", "sa'aada", "happiness", "What I hope you feel all day today."],
+  ["أَمَل", "amal", "hope", "The feeling that tomorrow can be even better."],
+  ["سَلَام", "salaam", "peace", "Also part of the classic hello: \"as-salaamu alaykum,\" peace be upon you."],
+  ["نُور", "noor", "light", "What you flip on in a dark room, and what you bring into one."],
+  ["جَمِيلَة", "jameela", "beautiful (for a girl)", "A word that describes whoever is reading this."],
+  ["شُكْرًا", "shukran", "thank you", "What you say when someone holds the door for you."],
+  ["صَبَاح الخَيْر", "sabaah al-khayr", "good morning", "Literally \"morning of goodness.\" The sweet reply is \"sabaah an-noor,\" morning of light."],
+  ["مَسَاء الخَيْر", "masaa' al-khayr", "good evening", "Same idea as good morning, but for when the sun goes down."],
+  ["مَرْحَبًا", "marhaban", "hello", "A friendly way to greet anyone you meet."],
+  ["قَهْوَة", "qahwa", "coffee", "Say it out loud. The English word traveled all the way from this one."],
+  ["شَاي", "shaay", "tea", "A hot drink, often with mint, and almost always offered to guests."],
+  ["سُكَّر", "sukkar", "sugar", "Sounds a lot like the English word, because English borrowed it."],
+  ["عَسَل", "'asal", "honey", "Bees make it. People also call someone sweet and cute \"'asal.\""],
+  ["فَرَاشَة", "faraasha", "butterfly", "It starts as a caterpillar and ends up with pretty wings."],
+  ["مَطَر", "matar", "rain", "Perfect weather for a blanket and a movie."],
+  ["غَيْمَة", "ghayma", "cloud", "Fluffy, white, and floating in the sky."],
+  ["زَهْرَة", "zahra", "flower, blossom", "It grows in gardens in spring. Also a lovely name."],
+  ["قِطَّة", "qitta", "cat", "Small, fluffy, and says meow."],
+  ["عُصْفُور", "'usfoor", "little bird", "A tiny thing that sings outside your window in the morning."],
+  ["حُلْم", "hulm", "dream", "What happens while you sleep, or what you're chasing while awake."],
+  ["رُوح", "rooh", "soul, spirit", "\"Ya roohi\" (my soul) is a very sweet thing to call someone."],
+  ["حَيَاة", "hayaat", "life", "Everything from your first breath on. Also a girl's name."],
+  ["صَبْر", "sabr", "patience", "What you need while waiting for something good."],
+  ["شَجَاعَة", "shajaa'a", "courage", "What it takes to try something new, even when you're nervous."],
+  ["قُوَّة", "quwwa", "strength", "What you have more of than you think."],
+  ["لُطْف", "lutf", "kindness, gentleness", "The way you treat people, which they really notice."],
+  ["يَوْم", "yawm", "day", "Twenty-four hours, and a new note in each one."],
+  ["اليَوْم", "al-yawm", "today", "It's \"day\" with \"the\" in front: the day that's happening right now."],
+  ["غَدًا", "ghadan", "tomorrow", "When the next note arrives."],
+  ["لَيْل", "layl", "night", "When the moon and the stars come out."],
+  ["حَنَان", "hanaan", "tenderness, affection", "Like a warm hug in a word."],
+  ["دِفْء", "dif'", "warmth", "What a blanket fresh out of the dryer gives you."],
+  ["هَدِيَّة", "hadiyya", "gift, present", "Something wrapped with a bow, just for you."],
+  ["مُوسِيقَى", "mooseeqa", "music", "Sounds a lot like the English word. Put some on today."],
+  ["أُغْنِيَة", "ughniya", "song", "Something you sing along to in the car."],
+  ["كِتَاب", "kitaab", "book", "Pages, a cover, and a story inside."],
+  ["نَعَم", "na'am", "yes", "The opposite of \"laa\" (no)."],
+  ["حَبِيبَتِي", "habeebti", "my darling (to a girl)", "From \"hubb\" (love). Said to someone very dear."],
+  ["يَلَّا", "yalla", "come on, let's go", "What you say when you're ready to leave and your friend is still looking for their shoes."],
+  ["فَرَح", "farah", "joy", "A happy feeling so big it makes you want to dance."],
+  ["شَوْق", "shawq", "longing", "The feeling of missing someone and wanting to see them soon."],
+  ["مَاء", "maa'", "water", "Drink a glass of it right now, please."],
+  ["لَيْمُون", "laymoon", "lemon", "Sour, yellow, and sounds a lot like the English word."],
+  ["بُرْتُقَال", "burtuqaal", "orange (the fruit)", "Juicy, round, and the same name as its color in English."],
+  ["نَوْم", "nawm", "sleep", "What you should get plenty of tonight."],
+  ["عَيْن", "'ayn", "eye", "You're using two of them to read this."],
+  ["نَجَاح", "najaah", "success", "What happens when hard work pays off."],
+  ["مَعًا", "ma'an", "together", "How everything is a little better."],
+  ["دَائِمًا", "daa'iman", "always", "Not just sometimes. Every single time."],
+  ["أَنْتِ رَائِعَة", "anti raa'i'a", "you're amazing (to a girl)", "A whole sentence today! It's true, too."],
+  ["اِبْتَسِمِي", "ibtasimi", "smile! (to a girl)", "Related to \"ibtisaama\" (a smile). It's an instruction, so do it."],
+  ["ذَهَب", "dhahab", "gold", "Shiny, precious, and the color of golden hour."],
+  ["جَبَل", "jabal", "mountain", "Big, tall, and fun to look at from the top."],
+  ["خُبْز", "khubz", "bread", "Fresh and warm out of the oven, especially pita."]
+];
+/* Sound tips: ' = a little catch in the throat, kh = like clearing your throat softly, gh = like a French r, q = a k sound from deep in the throat. */
+
+/* ===== Date logic (uses the viewer's own local date) ===== */
+const $ = id => document.getElementById(id);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+const TZ = "America/Chicago";     // every date on this page follows Central time
+function tzParts(n) {
+  const o = {};
+  new Intl.DateTimeFormat("en-US", { timeZone: TZ, year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", hourCycle: "h23" })
+    .formatToParts(n).forEach(p => { o[p.type] = +p.value; });
+  return o;
+}
+function localDay() { const n = new Date(), p = tzParts(n); return { y: p.year, m: p.month - 1, d: p.day, h: p.hour % 24, min: p.minute, date: n }; }
+function prettyDate(n) { return n.toLocaleDateString(undefined, { timeZone: TZ, weekday: "long", month: "long", day: "numeric" }); }
+function dayNumber(t) { return Math.round((Date.UTC(t.y, t.m, t.d) - Date.UTC(START[0], START[1], START[2])) / 864e5); }
+function isBirthday(t) {
+  if (location.hash === "#birthday") return true;
+  if (location.hash === "#daily") return false;
+  return t.m === BIRTHDAY[0] && t.d === BIRTHDAY[1];
+}
+
+let mode = null, currentKey = "";
+function render() {
+  const t = localDay();
+  const key = t.y + "-" + t.m + "-" + t.d + location.hash;
+  if (key === currentKey) return;
+  currentKey = key;
+  const bday = isBirthday(t);
+  $("daily").hidden = bday; $("bday").hidden = !bday;
+  const sig = SIGNED ? "— " + SIGNED : "— someone who thinks you're great";
+  $("sig").textContent = sig; $("bdaySig").textContent = sig;
+  if (bday) startBirthday(t); else showDaily(t);
+}
+
+function showDaily(t) {
+  stopBirthday();
+  mode = "daily";
+  const n = dayNumber(t);
+  const idx = ((n % MESSAGES.length) + MESSAGES.length) % MESSAGES.length;
+  $("msg").textContent = MESSAGES[idx];
+  $("noteNo").textContent = Math.max(1, n + 1);
+  $("dateLine").textContent = prettyDate(t.date);
+  $("hello").textContent = HER_NAME ? "A little note for " + HER_NAME : "A little note for you";
+  updateHugs();
+  showWord();
+  startSky();
+}
+
+/* ===== Arabic word of the day ===== */
+let wordNow = null;
+function showWord() {
+  const t = localDay();
+  const n = Math.round((Date.UTC(t.y, t.m, t.d) - Date.UTC(WORD_START[0], WORD_START[1], WORD_START[2])) / 864e5);
+  const i = ((n % WORDS.length) + WORDS.length) % WORDS.length;
+  wordNow = WORDS[i];
+  $("wordAr").textContent = wordNow[0];
+  $("wordSay").textContent = wordNow[1];
+  $("wordNo").textContent = Math.max(1, n + 1);
+  const p = $("peekBtn"); p.classList.remove("open"); p.setAttribute("aria-expanded", "false");
+  $("peekLbl").textContent = "Hint"; $("peekTxt").textContent = "Tap for a little hint \u2665\uFE0E";
+}
+$("peekBtn").addEventListener("click", e => {
+  const p = e.currentTarget, open = p.getAttribute("aria-expanded") !== "true";
+  p.setAttribute("aria-expanded", String(open)); p.classList.toggle("open", open);
+  $("peekLbl").textContent = open ? "Hint (tap to hide)" : "Hint";
+  $("peekTxt").textContent = open ? wordNow[3] : "Tap for a little hint \u2665\uFE0E";
+  if (open) { const [x, y] = centerOf(p); burst(x, y, 12, { hearts: true, power: 3 }); }
+});
+if ("speechSynthesis" in window) {
+  $("speakBtn").hidden = false;
+  $("speakBtn").addEventListener("click", () => {
+    const u = new SpeechSynthesisUtterance(wordNow[0]);
+    u.lang = "ar-SA"; u.rate = .8;
+    const v = speechSynthesis.getVoices().find(v => /^ar/i.test(v.lang)); if (v) u.voice = v;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  });
+}
+
+/* ===== Countdown to tomorrow's note ===== */
+function tick() {
+  const t = localDay();
+  const mins = Math.max(1, 1440 - (t.h * 60 + t.min));
+  const h = Math.floor(mins / 60), m = mins % 60;
+  $("countdown").textContent = (h ? h + "h " : "") + m + "m";
+  render();
+}
+
+/* ===== Floating hearts ===== */
+let skyOn = false;
+function startSky() {
+  if (skyOn || reduce) return; skyOn = true;
+  const sky = $("sky");
+  for (let i = 0; i < 16; i++) {
+    const h = document.createElement("i");
+    h.textContent = "♥︎";
+    h.style.left = (Math.random() * 100) + "%";
+    h.style.fontSize = (14 + Math.random() * 26) + "px";
+    h.style.animationDuration = (14 + Math.random() * 16) + "s";
+    h.style.animationDelay = (-Math.random() * 30) + "s";
+    if (i % 3 === 1) h.style.color = "var(--lav)";
+    if (i % 3 === 2) h.style.color = "var(--mint)";
+    sky.appendChild(h);
+  }
+}
+
+/* ===== Confetti / heart particles ===== */
+const fx = $("fx"), ctx = fx.getContext("2d");
+let parts = [], raf = 0;
+function sizeFx() { const r = devicePixelRatio || 1; fx.width = innerWidth * r; fx.height = innerHeight * r; ctx.setTransform(r, 0, 0, r, 0, 0); }
+addEventListener("resize", sizeFx); sizeFx();
+function palette() { const s = getComputedStyle(document.documentElement); return ["--rose", "--lav", "--mint", "--butter"].map(v => s.getPropertyValue(v).trim()); }
+function burst(x, y, n, opts = {}) {
+  if (reduce) return;
+  const cols = palette();
+  for (let i = 0; i < n; i++) {
+    const a = opts.down ? Math.PI / 2 + (Math.random() - .5) * .6 : Math.random() * Math.PI * 2;
+    const sp = opts.down ? 1 + Math.random() * 2 : 2 + Math.random() * (opts.power || 6);
+    parts.push({
+      x: opts.down ? Math.random() * innerWidth : x, y: opts.down ? -20 - Math.random() * innerHeight * .5 : y,
+      vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (opts.down ? 0 : 2), g: opts.down ? .03 : .14,
+      r: 4 + Math.random() * 5, rot: Math.random() * 6, vr: (Math.random() - .5) * .3,
+      c: cols[i % cols.length], heart: opts.hearts ? true : Math.random() < .25, life: opts.down ? 420 : 110 + Math.random() * 40
+    });
+  }
+  if (!raf) raf = requestAnimationFrame(step);
+}
+function heartPath(r) {
+  ctx.beginPath(); ctx.moveTo(0, r * .35);
+  ctx.bezierCurveTo(-r * 1.2, -r * .45, -r * .45, -r * 1.25, 0, -r * .45);
+  ctx.bezierCurveTo(r * .45, -r * 1.25, r * 1.2, -r * .45, 0, r * .35); ctx.fill();
+}
+function step() {
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  parts = parts.filter(p => p.life > 0 && p.y < innerHeight + 40);
+  for (const p of parts) {
+    p.vy += p.g; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life--;
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = Math.min(1, p.life / 30); ctx.fillStyle = p.c;
+    if (p.heart) heartPath(p.r * 1.3); else ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2);
+    ctx.restore();
+  }
+  raf = parts.length ? requestAnimationFrame(step) : 0;
+  if (!raf) ctx.clearRect(0, 0, innerWidth, innerHeight);
+}
+function centerOf(el) { const b = el.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; }
+
+/* ===== Hearts sent back (kept on this device only) ===== */
+function hugKey() { const t = localDay(); return "hugs-" + t.y + "-" + t.m + "-" + t.d; }
+function updateHugs() {
+  const n = +(store.get(hugKey()) || 0);
+  $("hugCount").textContent = n ? n + (n === 1 ? " heart sent today" : " hearts sent today") : "";
+}
+$("hugBtn").addEventListener("click", e => {
+  store.set(hugKey(), +(store.get(hugKey()) || 0) + 1); updateHugs();
+  const [x, y] = centerOf(e.currentTarget); burst(x, y, 28, { hearts: true, power: 5 });
+});
+
+/* ===== Birthday ===== */
+function buildTitle() {
+  const el = $("bdayTitle"); el.textContent = "";
+  [..."Happy Birthday"].forEach((ch, i) => {
+    const s = document.createElement("span");
+    s.className = "ltr"; s.setAttribute("aria-hidden", "true");
+    s.textContent = ch === " " ? " " : ch; s.style.animationDelay = (i * .08) + "s";
+    el.appendChild(s);
+  });
+}
+function buildCake() {
+  const xs = [82, 120, 158];
+  const drips = (n, w) => Array(n).fill("q" + (-w / 2) + " " + (w * .55) + " " + (-w) + " 0").join(" ");
+  const sprinkles = [[50,170,"--mint",20],[78,185,"--butter",-30],[105,165,"--lav",45],[140,182,"--mint",-15],[168,168,"--butter",30],[190,184,"--lav",-40],[88,118,"--rose",25],[132,126,"--mint",-35],[160,112,"--rose",10]]
+    .map(([x, y, c, r]) => `<rect x="${x}" y="${y}" width="10" height="4" rx="2" fill="var(${c})" transform="rotate(${r} ${x + 5} ${y + 2})"/>`).join("");
+  const candles = xs.map((x, i) => `
+    <g class="candle" data-i="${i}" tabindex="0" role="button" aria-label="Candle ${i + 1}, lit. Tap to blow out">
+      <rect x="${x - 16}" y="10" width="32" height="80" fill="transparent"/>
+      <circle class="glow" cx="${x}" cy="30" r="17" fill="var(--butter)"/>
+      <rect x="${x - 5}" y="52" width="10" height="36" rx="3" fill="var(--card)" stroke="var(--line)" stroke-width="1.5"/>
+      <path d="M${x - 5} 60 l10 -5 M${x - 5} 70 l10 -5 M${x - 5} 80 l10 -5" stroke="var(--rose)" stroke-width="2.5"/>
+      <line x1="${x}" y1="46" x2="${x}" y2="52" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+      <path class="flame" d="M${x} 22 C${x + 8} 32 ${x + 7} 46 ${x} 46 C${x - 7} 46 ${x - 8} 32 ${x} 22 Z" fill="var(--butter)" stroke="var(--rose)" stroke-width="1.5"/>
+      <g class="smoke" style="transform-box:fill-box;transform-origin:center"><circle cx="${x}" cy="38" r="4" fill="var(--muted)"/><circle cx="${x + 5}" cy="30" r="3" fill="var(--muted)"/><circle cx="${x - 3}" cy="23" r="2.5" fill="var(--muted)"/></g>
+    </g>`).join("");
+  $("cake").innerHTML = `
+    <ellipse cx="120" cy="212" rx="112" ry="10" fill="var(--line)"/>
+    <g class="cake-bob">
+      <rect x="30" y="138" width="180" height="70" rx="14" fill="var(--rose)"/>
+      <path d="M30 152 q0 -14 14 -14 h152 q14 0 14 14 v6 ${drips(9, 20)} z" fill="var(--card)"/>
+      <rect x="55" y="88" width="130" height="56" rx="12" fill="var(--lav)"/>
+      <path d="M55 100 q0 -12 12 -12 h106 q12 0 12 12 v5 ${drips(5, 26)} z" fill="var(--card)"/>
+      ${sprinkles}
+    </g>
+    ${candles}`;
+  $("cake").querySelectorAll(".candle").forEach(c => {
+    const go = e => { e.preventDefault(); blowOut(c); };
+    c.addEventListener("click", go);
+    c.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") go(e); });
+  });
+}
+let wished = false;
+function blowOut(c) {
+  if (c.classList.contains("out")) return;
+  c.classList.add("out");
+  c.setAttribute("aria-label", "Candle " + (+c.dataset.i + 1) + ", blown out");
+  const [x, y] = centerOf(c); burst(x, y - 20, 10, { power: 3 });
+  const left = $("cake").querySelectorAll(".candle:not(.out)").length;
+  if (left) { $("cakeHint").textContent = left === 1 ? "One more!" : left + " to go..."; return; }
+  if (wished) return; wished = true;
+  const hint = $("cakeHint"); hint.textContent = "Your wish is on its way!"; hint.classList.add("done");
+  $("blowAll").hidden = true; $("wishLine").hidden = false;
+  partyTime();
+}
+function partyTime() {
+  const [x, y] = centerOf($("cake"));
+  burst(x, y, 120, { power: 9 });
+  setTimeout(() => burst(0, 0, 160, { down: true }), 250);
+  for (let i = 0; i < 6; i++) setTimeout(spawnBalloon, i * 180);
+}
+$("blowAll").addEventListener("click", () => {
+  $("cake").querySelectorAll(".candle").forEach((c, i) => setTimeout(() => blowOut(c), i * 160));
+});
+$("partyBtn").addEventListener("click", e => {
+  const [x, y] = centerOf(e.currentTarget); burst(x, y, 70, { power: 8 }); burst(0, 0, 90, { down: true });
+});
+
+let popped = 0, balloonTimer = 0;
+function spawnBalloon() {
+  if (reduce || mode !== "bday") return;
+  const layer = $("balloons");
+  if (layer.children.length > 9) return;
+  const cols = ["--rose", "--lav", "--mint", "--butter"], c = cols[Math.floor(Math.random() * 4)];
+  const b = document.createElement("button");
+  b.className = "balloon"; b.type = "button"; b.setAttribute("aria-label", "Pop balloon");
+  const w = 52 + Math.random() * 26; b.style.width = w + "px";
+  b.style.left = (Math.random() * 90) + "%";
+  b.style.animationDuration = (9 + Math.random() * 6) + "s";
+  b.innerHTML = `<svg viewBox="0 0 60 110" aria-hidden="true"><path d="M30 2 C50 2 58 20 58 34 C58 54 42 70 30 72 C18 70 2 54 2 34 C2 20 10 2 30 2 Z" fill="var(${c})"/><ellipse cx="20" cy="22" rx="6" ry="10" fill="#fff" opacity=".45"/><path d="M26 72 L34 72 L30 78 Z" fill="var(${c})"/><path d="M30 78 q-6 10 0 16 q6 8 0 14" stroke="var(--muted)" stroke-width="1.4" fill="none"/></svg>`;
+  b.addEventListener("animationend", e => { if (e.target === b) b.remove(); });
+  b.addEventListener("click", () => {
+    const [x, y] = centerOf(b); burst(x, y - 10, 34, { power: 6 }); b.remove();
+    popped++; $("popCount").textContent = popped + (popped === 1 ? " balloon popped!" : " balloons popped!");
+  });
+  layer.appendChild(b);
+}
+function startBirthday(t) {
+  mode = "bday";
+  $("bdayDate").textContent = prettyDate(t.date);
+  $("bdaySub").textContent = HER_NAME ? "dear " + HER_NAME + "!" : "to the loveliest person I know";
+  wished = false; $("wishLine").hidden = true; $("blowAll").hidden = false;
+  $("cakeHint").className = "hint"; $("cakeHint").textContent = "Make a wish, then tap each candle to blow it out.";
+  buildTitle(); buildCake(); startSky();
+  clearInterval(balloonTimer); balloonTimer = setInterval(spawnBalloon, 1700);
+  setTimeout(() => burst(0, 0, 140, { down: true }), 400);
+}
+function stopBirthday() { clearInterval(balloonTimer); balloonTimer = 0; const l = $("balloons"); if (l) l.textContent = ""; }
+
+/* Little sparkle wherever she taps on the birthday page */
+document.addEventListener("pointerdown", e => {
+  if (mode === "bday" && !e.target.closest("button, .candle")) burst(e.clientX, e.clientY, 12, { power: 4, hearts: true });
+});
+
+addEventListener("hashchange", render);
+render(); tick(); setInterval(tick, 30000);
+</script>
+</body></html>
